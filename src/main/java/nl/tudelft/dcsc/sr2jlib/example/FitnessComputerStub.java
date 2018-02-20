@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.tudelft.dcsc.sr2jlib.fitness.Fitness;
-import nl.tudelft.dcsc.sr2jlib.fitness.FitnessComputerClass;
 import nl.tudelft.dcsc.sr2jlib.fitness.FitnessComputerInstance;
 import nl.tudelft.dcsc.sr2jlib.grammar.Grammar;
 
@@ -45,15 +44,7 @@ public class FitnessComputerStub extends FitnessComputerInstance {
      * The basic constructor.
      *
      */
-    private FitnessComputerStub() {
-    }
-
-    /**
-     * Allows to initialize the fitness computer class
-     */
-    public static void register() {
-        //Set an instance of this class as a fitness computer
-        FitnessComputerClass.set_inst(new FitnessComputerStub());
+    public FitnessComputerStub() {
     }
 
     /**
@@ -90,7 +81,7 @@ public class FitnessComputerStub extends FitnessComputerInstance {
     }
 
     @Override
-    public Fitness compute_fitness(Method[] vf, int mgr_id)
+    public Fitness compute_fitness(int mgr_id, Method[] vf)
             throws IllegalStateException, IllegalArgumentException,
             ClassNotFoundException, IllegalAccessException,
             InvocationTargetException {

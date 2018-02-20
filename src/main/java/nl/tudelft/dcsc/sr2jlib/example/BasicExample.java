@@ -29,6 +29,7 @@ import nl.tudelft.dcsc.sr2jlib.ProcessManagerConfig;
 import nl.tudelft.dcsc.sr2jlib.SelectionType;
 import nl.tudelft.dcsc.sr2jlib.err.ErrorListener;
 import nl.tudelft.dcsc.sr2jlib.err.ErrorManager;
+import nl.tudelft.dcsc.sr2jlib.fitness.FitnessManager;
 import nl.tudelft.dcsc.sr2jlib.grammar.Grammar;
 import nl.tudelft.dcsc.sr2jlib.grammar.GrammarConfig;
 
@@ -132,23 +133,22 @@ public class BasicExample {
     public void prepare_manager() {
         //Prepare configuration object
         final ProcessManagerConfig config = new ProcessManagerConfig(
-                0.1, 20, 10000, NUM_VF_DOFS, 30, 30, 1, 1,
-                PROCESS_MANAGER_ID, SelectionType.VALUE, false, 0, 0);
-        //Initialize the process manager variable
-        m_manager = new ProcessManager(
-                (mgr) -> {
-                    //Note: Here one can add marking this process manager is finished.
-                    //It is useful when several process managers running in parallel.
-                    LOGGER.log(Level.INFO,
-                            "The ProcessManager-{0} has stopped!", PROCESS_MANAGER_ID);
-                }, new GridObserverStub() {
+                PROCESS_MANAGER_ID, 0.1, 20, 10000, NUM_VF_DOFS, 30, 30, 1, 1,
+                SelectionType.VALUE, false, 0, 0, new GridObserverStub() {
             @Override
             public void add_individual(Individual ind) {
                 super.add_individual(ind);
                 //Check if the fit individual is found
                 stop_fit_found(ind);
             }
-        }, config);
+        }, (mgr) -> {
+                    //Note: Here one can add marking this process manager is finished.
+                    //It is useful when several process managers running in parallel.
+                    LOGGER.log(Level.INFO,
+                            "The ProcessManager-{0} has stopped!", PROCESS_MANAGER_ID);
+                });
+        //Initialize the process manager variable
+        m_manager = new ProcessManager(config);
     }
 
     /**
@@ -160,8 +160,7 @@ public class BasicExample {
      * instances of process managers.
      */
     public void prepare_ftn_computer() {
-        //This is a call to an example fitness computer stub
-        FitnessComputerStub.register();
+        FitnessManager.set_inst(new FitnessComputerStub());
     }
 
     /**
