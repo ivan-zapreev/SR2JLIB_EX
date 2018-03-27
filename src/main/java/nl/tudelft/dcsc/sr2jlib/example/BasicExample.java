@@ -21,6 +21,7 @@
  */
 package nl.tudelft.dcsc.sr2jlib.example;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.tudelft.dcsc.sr2jlib.grid.Individual;
@@ -32,6 +33,7 @@ import nl.tudelft.dcsc.sr2jlib.err.ErrorManager;
 import nl.tudelft.dcsc.sr2jlib.fitness.FitnessManager;
 import nl.tudelft.dcsc.sr2jlib.grammar.Grammar;
 import nl.tudelft.dcsc.sr2jlib.grammar.GrammarConfig;
+import nl.tudelft.dcsc.sr2jlib.grammar.expr.Expression;
 
 /**
  *
@@ -43,6 +45,16 @@ public class BasicExample {
     private final Object SYNCHRONIZER = new Object();
     //The flag indicating that there is no individuals generated yet
     private boolean no_individuals = true;
+
+    /**
+     * Notifies the waiting main thread that the process manager has finished.
+     */
+    private void stop_manager_finished() {
+        synchronized (SYNCHRONIZER) {
+            no_individuals = false;
+            SYNCHRONIZER.notify();
+        }
+    }
 
     /**
      * Notifies the waiting main thread that a sufficiently fit individual is
@@ -136,7 +148,7 @@ public class BasicExample {
                 PROCESS_MANAGER_ID, 0.1, 20, 10000, NUM_VF_DOFS, 30, 30, 1, 1,
                 SelectionType.VALUE, false, 0, 0, new GridObserverStub() {
             @Override
-            public void add_individual(Individual ind) {
+            public synchronized void add_individual(Individual ind) {
                 super.add_individual(ind);
                 //Check if the fit individual is found
                 stop_fit_found(ind);
@@ -146,6 +158,7 @@ public class BasicExample {
                     //It is useful when several process managers running in parallel.
                     LOGGER.log(Level.INFO,
                             "The ProcessManager-{0} has stopped!", PROCESS_MANAGER_ID);
+                    stop_manager_finished();
                 });
         //Initialize the process manager variable
         m_manager = new ProcessManager(config);
@@ -197,7 +210,26 @@ public class BasicExample {
 
         //Stop the process manager
         LOGGER.log(Level.INFO, "Stopping the manager");
-        m_manager.stop(false);
+        m_manager.stop(true);
+
+        //Log the individual
+        List<Individual> inds = m_manager.get_best_fit_ind();
+        LOGGER.log(Level.INFO, "**************************************************");
+        LOGGER.log(Level.INFO, "Found {0} fit individuals: ", inds.size());
+        int ind_idx = 0;
+        for (Individual ind : inds) {
+            List<Expression> exprs = ind.get_expr();
+            LOGGER.log(Level.INFO, ">>>>>>>");
+            LOGGER.log(Level.INFO, "Individual #{0} ({1}) has {2} dofs",
+                    new Object[]{ind_idx, ind, exprs.size()});
+            int exp_idx = 0;
+            for (Expression expr : exprs) {
+                LOGGER.log(Level.INFO, "Individual #{0} dof {1} expression is: {2}",
+                        new Object[]{ind_idx, exp_idx, expr.to_text()});
+                exp_idx++;
+            }
+            ind_idx++;
+        }
     }
 
     public static void main(String[] args) {

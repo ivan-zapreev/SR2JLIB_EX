@@ -21,6 +21,8 @@
  */
 package nl.tudelft.dcsc.sr2jlib.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import nl.tudelft.dcsc.sr2jlib.grid.GridObserver;
@@ -37,33 +39,60 @@ public class GridObserverStub implements GridObserver {
     //Stores the reference to the logger
     private static final Logger LOGGER = Logger.getLogger(GridObserverStub.class.getName());
 
+    private final List<Individual> m_best_inds = new ArrayList<>();
+    protected boolean m_is_observing = false;
+
     @Override
-    public void start_observing() {
+    public synchronized void start_observing() {
         //Here one can start the UI elements which visualize the individuals'
         //grid or fitness and also do some other initialization
         LOGGER.log(Level.INFO, "Grid observations are started!");
+        m_is_observing = true;
     }
 
     @Override
-    public void add_individual(Individual ind) {
-        //Here one could re-compute the mean fitness values and check if the 
-        //desired fitness is reached. Also an update of the related UI elements
-        //is in order.
-        LOGGER.log(Level.INFO, "Adding new individual: {0}", ind);
+    public synchronized void add_individual(Individual ind) {
+        if (m_is_observing) {
+            //Here one could re-compute the mean fitness values and check if the 
+            //desired fitness is reached. Also an update of the related UI elements
+            //is in order.
+            LOGGER.log(Level.INFO, "Adding new individual: {0}", ind);
+
+            //Below we keep track of the best fit individuals
+            if (m_best_inds.isEmpty()) {
+                m_best_inds.add(ind);
+            } else {
+                final Individual max_ind = m_best_inds.get(0);
+                if (max_ind.equals(ind)) {
+                    m_best_inds.add(ind);
+                } else {
+                    if (max_ind.is_less(ind)) {
+                        m_best_inds.clear();
+                        m_best_inds.add(ind);
+                    }
+                }
+            }
+        }
     }
 
     @Override
-    public void kill_individual(Individual ind) {
+    public synchronized void kill_individual(Individual ind) {
         //Here one could re-compute the mean fitness values. Also an update of
         //the related UI elements is in order.
         LOGGER.log(Level.INFO, "Killing old individual: {0}", ind);
     }
 
     @Override
-    public void stop_observing() {
+    public synchronized void stop_observing() {
         //Here one can stop the UI elements which visualize the individuals'
         //grid or fitness and also do some other finilizing work
         LOGGER.log(Level.INFO, "Grid observations are stopped!");
+        m_is_observing = false;
+    }
+
+    @Override
+    public synchronized List<Individual> get_best_fit_ind() {
+        return new ArrayList<>(m_best_inds);
     }
 
 }

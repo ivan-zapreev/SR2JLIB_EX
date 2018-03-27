@@ -50,14 +50,14 @@ public class FitnessComputerStub extends FitnessComputerInstance {
     /**
      * Computes an individual dof fitness
      *
-     * Here we check that the value of the finction at point (1.0, ..., 1.0) is
-     * within [-5.0,+5.0]
+     * Here we check that the value of the function at point (1.0, ..., 1.0) is
+     * within [-0.25,+0.25]
      *
      * @param fn the dof function
      * @return the fitness
      */
     private double compute_fitness(final int mgr_id, final int dof_idx, final Method fn) {
-        //Obtaine the number of variables for the given manager and dof
+        //Obtain the number of variables for the given manager and dof
         //This is for the case it is not known at this point, one could
         //have also realize/initialize the fitness computer class with
         //this knowledge/data beforehand.
@@ -72,7 +72,7 @@ public class FitnessComputerStub extends FitnessComputerInstance {
         double ftn = 0.0;
         try {
             double value = (Double) fn.invoke(null, new Object[]{args});
-            ftn = ((value >= -5.0) && (value <= +5.0)) ? 1.0 : 0.0;
+            ftn = ((value >= -0.25) && (value <= +0.25)) ? 1.0 : 0.0;
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             LOGGER.log(Level.SEVERE, "Falied to compute the fitness", ex);
         }
