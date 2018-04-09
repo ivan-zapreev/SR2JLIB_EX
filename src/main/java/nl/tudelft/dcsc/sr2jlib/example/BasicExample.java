@@ -148,8 +148,8 @@ public class BasicExample {
                 PROCESS_MANAGER_ID, 0.1, 20, 10000, NUM_VF_DOFS, 30, 30, 1, 1,
                 SelectionType.VALUE, false, 0, 0, new GridObserverStub() {
             @Override
-            public synchronized void add_individual(Individual ind) {
-                super.add_individual(ind);
+            public synchronized void set(Individual ind) {
+                super.set(ind);
                 //Check if the fit individual is found
                 stop_fit_found(ind);
             }
@@ -218,7 +218,7 @@ public class BasicExample {
         LOGGER.log(Level.INFO, "Found {0} fit individuals: ", inds.size());
         int ind_idx = 0;
         for (Individual ind : inds) {
-            List<Expression> exprs = ind.get_expr();
+            List<Expression> exprs = ind.get_expr_list();
             LOGGER.log(Level.INFO, ">>>>>>>");
             LOGGER.log(Level.INFO, "Individual #{0} ({1}) has {2} dofs",
                     new Object[]{ind_idx, ind, exprs.size()});

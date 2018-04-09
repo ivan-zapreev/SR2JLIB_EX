@@ -51,7 +51,7 @@ public class GridObserverStub implements GridObserver {
     }
 
     @Override
-    public synchronized void add_individual(Individual ind) {
+    public synchronized void set(Individual ind) {
         if (m_is_observing) {
             //Here one could re-compute the mean fitness values and check if the 
             //desired fitness is reached. Also an update of the related UI elements
@@ -63,7 +63,7 @@ public class GridObserverStub implements GridObserver {
                 m_best_inds.add(ind);
             } else {
                 final Individual max_ind = m_best_inds.get(0);
-                if (max_ind.equals(ind)) {
+                if (max_ind.is_equal(ind)) {
                     m_best_inds.add(ind);
                 } else {
                     if (max_ind.is_less(ind)) {
@@ -76,7 +76,7 @@ public class GridObserverStub implements GridObserver {
     }
 
     @Override
-    public synchronized void kill_individual(Individual ind) {
+    public synchronized void remove(Individual ind) {
         //Here one could re-compute the mean fitness values. Also an update of
         //the related UI elements is in order.
         LOGGER.log(Level.INFO, "Killing old individual: {0}", ind);
