@@ -146,7 +146,7 @@ public class BasicExample {
         //Prepare configuration object
         final ProcessManagerConfig config = new ProcessManagerConfig(
                 PROCESS_MANAGER_ID, 0.1, 20, 10000, NUM_VF_DOFS, 30, 30, 1, 1,
-                SelectionType.VALUE, false, 0, 0, new GridObserverStub() {
+                SelectionType.VALUE, false, false, 0, 0, new GridObserverStub() {
             @Override
             public synchronized void set(Individual ind) {
                 super.set(ind);
