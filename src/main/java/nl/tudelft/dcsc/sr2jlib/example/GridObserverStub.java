@@ -29,10 +29,9 @@ import nl.tudelft.dcsc.sr2jlib.grid.GridObserver;
 import nl.tudelft.dcsc.sr2jlib.grid.Individual;
 
 /**
- *
  * An example empty implementation for the sake of testing
  *
- * @author Dr. Ivan S. Zapreev
+ * @author <a href="mailto:ivan.zapreev@gmail.com"> Dr. Ivan S. Zapreev </a>
  */
 public class GridObserverStub implements GridObserver {
 

@@ -36,8 +36,10 @@ import nl.tudelft.dcsc.sr2jlib.grammar.GrammarConfig;
 import nl.tudelft.dcsc.sr2jlib.grammar.expr.Expression;
 
 /**
+ * This example class shows how the SR2JLIB can be used as a batch Symbolic
+ * Regression tool.
  *
- * @author Dr. Ivan S. Zapreev
+ * @author <a href="mailto:ivan.zapreev@gmail.com"> Dr. Ivan S. Zapreev </a>
  */
 public class BasicExample {
 
