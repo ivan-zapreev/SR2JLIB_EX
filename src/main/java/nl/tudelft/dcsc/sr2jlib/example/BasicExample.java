@@ -191,7 +191,7 @@ public class BasicExample {
             @Override
             public void error(String msg, Exception ex) {
                 LOGGER.log(Level.SEVERE, msg, ex);
-                m_manager.stop(10);
+                m_manager.stop(10, null);
             }
         });
     }
@@ -212,7 +212,7 @@ public class BasicExample {
 
         //Stop the process manager
         LOGGER.log(Level.INFO, "Stopping the manager");
-        m_manager.stop(10);
+        m_manager.stop(10, null);
 
         //Log the individual
         List<Individual> inds = m_manager.get_best_fit_ind();
